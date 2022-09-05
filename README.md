@@ -1,8 +1,8 @@
 # Дипломный проект Movies-explorer (бэкенд). Создана в рамках учебы в [Яндекс.Практикум](https://praktikum.yandex.ru/) на курсе ["Веб-разработчик"](https://praktikum.yandex.ru/web/). 
 
-## IP address ➡️ 
+## IP address ➡️ 84.252.128.255
 
-## [Link to the server ⬅️]()
+## [Link to the server ⬅️](https://api.movies.explorer.nomorepartiesxyz.ru)
 
 ## Функциональность:
 - Регистрация;
