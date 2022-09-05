@@ -1,4 +1,4 @@
-# Проект Movies-explorer (бэкенд). Создана в рамках учебы в [Яндекс.Практикум](https://praktikum.yandex.ru/) на курсе ["Веб-разработчик"](https://praktikum.yandex.ru/web/). Данный проект является дипломной работой на курсе веб-разработчик Яндекс.Практикума.
+# Дипломный проект Movies-explorer (бэкенд). Создана в рамках учебы в [Яндекс.Практикум](https://praktikum.yandex.ru/) на курсе ["Веб-разработчик"](https://praktikum.yandex.ru/web/). 
 
 ## IP address ➡️ 
 
