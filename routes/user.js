@@ -3,14 +3,14 @@ const { celebrate, Joi } = require('celebrate');
 
 const { getUserMe, updateUserInfo } = require('../controllers/users');
 
-router.get('/me', getUserMe);
+router.get('/users/me', getUserMe);
 
 router.patch(
-  '/me',
+  '/users/me',
   celebrate({
     body: Joi.object().keys({
-      email: Joi.string().required(),
-      name: Joi.string().min(2).max(30).required(),
+      email: Joi.string().required().email(),
+      name: Joi.string().required().min(2).max(30),
     }),
   }),
   updateUserInfo,

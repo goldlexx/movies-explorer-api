@@ -3,10 +3,10 @@ const { celebrate, Joi } = require('celebrate');
 
 const { getMovies, createMovie, deleteMovie } = require('../controllers/movie');
 
-router.get('/', getMovies);
+router.get('/movies/', getMovies);
 
 router.post(
-  '/',
+  '/movies/',
   celebrate({
     body: Joi.object().keys({
       country: Joi.string().required(),
@@ -38,7 +38,7 @@ router.post(
 );
 
 router.delete(
-  '/:_id',
+  '/movies/:_id',
   celebrate({
     params: Joi.object().keys({
       _id: Joi.string().required().length(24).hex(),

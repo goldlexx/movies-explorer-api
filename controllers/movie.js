@@ -43,7 +43,7 @@ module.exports.createMovie = (req, res, next) => {
 };
 
 module.exports.deleteMovie = (req, res, next) => {
-  Movie.findByIdAndRemove(req.params._id)
+  Movie.findById(req.params._id)
     .orFail(() => {
       throw new ErrorNotFound('Карточка с таким ID - не найдена');
     })
@@ -51,7 +51,9 @@ module.exports.deleteMovie = (req, res, next) => {
       if (!movie.owner.equals(req.user._id)) {
         return next(new Forbidden('Нельзя удалить чужую карточку'));
       }
-      return res.send(movie);
+      return movie
+        .remove()
+        .then(() => res.status(200).send({ message: 'Карточка удалена' }));
     })
     .catch((err) => errorMessage(err, req, res, next));
 };

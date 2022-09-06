@@ -6,8 +6,9 @@ const errorMessage = (err, req, res, next) => {
   }
   if (err.code === 11000) {
     next(new ErrorConflict('Пользователь с таким email уже существует'));
+  } else {
+    next(err);
   }
-  next(err);
 };
 
 module.exports = { errorMessage };
