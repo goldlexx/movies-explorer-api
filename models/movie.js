@@ -25,31 +25,34 @@ const movieSchema = new mongoose.Schema({
   image: {
     type: String,
     required: true,
-    validator: (link) => {
-      validator.isURL(link, {
+    validate: {
+      validator: (link) => validator.isURL(link, {
         protocols: ['http', 'https'],
         require_protocol: true,
-      });
+      }),
+      message: 'Ссылка должна быть корректным URL',
     },
   },
   trailerLink: {
     type: String,
     required: true,
-    validator: (link) => {
-      validator.isURL(link, {
+    validate: {
+      validator: (link) => validator.isURL(link, {
         protocols: ['http', 'https'],
         require_protocol: true,
-      });
+      }),
+      message: 'Ссылка должна быть корректным URL',
     },
   },
   thumbnail: {
     type: String,
     required: true,
-    validator: (link) => {
-      validator.isURL(link, {
+    validate: {
+      validator: (link) => validator.isURL(link, {
         protocols: ['http', 'https'],
         require_protocol: true,
-      });
+      }),
+      message: 'Ссылка должна быть корректным URL',
     },
   },
   owner: {

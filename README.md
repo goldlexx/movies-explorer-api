@@ -1,65 +1,48 @@
-# Дипломный проект Movies-explorer (Бэкенд). Создана в рамках учебы в [Яндекс.Практикум](https://praktikum.yandex.ru/) на курсе ["Веб-разработчик"](https://praktikum.yandex.ru/web/).
+# Movies Explorer API
 
-## Описание:
+The Express API for [Movies Explorer](https://github.com/goldlexx/movies-explorer-frontend). It manages user accounts, authentication, profile data, and saved movies.
 
-Репозиторий для приложения проекта `Movies`, включающий бэкенд часть приложения.
+## Features
 
-API реализован с валидацией запросов, логированием запросов и ошибок, централизованной обработкой ошибок и доступен по [этой](https://api.movies.explorer.nomorepartiesxyz.ru/) ссылке.
+- Register and sign in with JWT authentication
+- Read and update the authenticated user's profile
+- List, save, and delete the authenticated user's movies
+- Validate request data and URLs
+- Apply rate limiting and centralized request/error logging
 
-Публичный IP-адрес сервера: 84.252.128.255
+## Stack
 
-## Функциональность:
-- Регистрация;
-- Авторизация;
-- Обновление данных пользователя;
-- Получение информации о текущем пользователе;
-- Получение списка фильмов;
-- Создание фильма;
-- Удаление фильма;
-- Обработка ошибок;
-- Валидация входящих данных.
+Node.js, Express, MongoDB, Mongoose, JWT, bcryptjs, Celebrate/Joi, Winston, Helmet.
 
-## Используемые технологии
-- Node.js
-- express.js
-- MongoDB
-- Mongoose
+## Run locally
 
-## Стек технологий
-- сервер на `Ubuntu` в Яндекс.Облаке
-- ssh-ключи для доступа к серверу
-- API-сервер на `Node.js` + `express.js`
-- база данных на `MongoDB` + `Mongoose`
-- обновление кода на сервере через `Git`
-- менеджер процессов на сервере `pm2`
-- раздача фронтенда через `nginx`
-- обратный прокси-сервер на `nginx`
-- SSL-сертификаты
-- хранение переменных окружения в `.env`-файле
+Run MongoDB locally and create `.env` from `.env.example`. Set a random `JWT_SECRET` of at least 32 characters and a local `DATABASE_URL`.
 
-### Инструкция по развертыванию проекта:
 ```bash
-# клонирование репозитория
-$ git clone https://github.com/goldlexx/movies-explorer-api.git
-
-# установка зависимостей
-$ npm install
-
-# запуск develop-сборки фронтенда
-$ npm run dev
-
+npm ci
+npm run dev
 ```
----
 
-![Illustration for the project](https://moviestart.ru/wp-content/uploads/2020/12/image-21-02-20-08-02.jpg)
+Use `npm start` to run the production server and `npm run lint` for ESLint.
 
+## API routes
 
+- `POST /signup` and `POST /signin`
+- `GET /users/me` and `PATCH /users/me`
+- `GET /movies/`, `POST /movies/`, and `DELETE /movies/:_id`
 
+The API requires JWT and MongoDB settings from the environment; no secret fallback is used.
 
+## Integration tests
 
+The API integration suite is in `test/api.integration.test.js`. Set `MONGODB_TEST_URI` to a disposable MongoDB database whose name ends in `_test`, then run:
 
+```bash
+npm test
+```
 
+The test suite drops the selected database before and after its run. Never point `MONGODB_TEST_URI` at a working or production database. Without this variable, the integration suite is skipped.
 
+## Demo
 
-
-
+No live API endpoint is listed because the previous deployment could not be verified.

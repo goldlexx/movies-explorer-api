@@ -12,7 +12,7 @@ module.exports.auth = (req, res, next) => {
   let payload;
 
   try {
-    payload = jwt.verify(token, JWT_SECRET);
+    payload = jwt.verify(token, JWT_SECRET, { algorithms: ['HS256'] });
   } catch (err) {
     throw new Unauthorized('Необходима авторизация');
   }

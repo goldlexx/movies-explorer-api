@@ -28,6 +28,7 @@ module.exports.updateUserInfo = (req, res, next) => {
     .orFail(() => {
       throw new ErrorNotFound('Пользователь с таким id не найден');
     })
+    .then((user) => User.findById(user._id))
     .then((user) => res.send(user))
     .catch((err) => errorMessage(err, req, res, next));
 };
@@ -43,6 +44,7 @@ module.exports.createUser = (req, res, next) => {
       email,
       password: hash,
     }))
+    .then((user) => User.findById(user._id))
     .then((user) => res.send(user))
     .catch((err) => errorMessage(err, req, res, next));
 };
@@ -53,6 +55,7 @@ module.exports.login = (req, res, next) => {
   return User.findUserByCredentials(email, password)
     .then((user) => {
       const token = jwt.sign({ _id: user._id }, JWT_SECRET, {
+        algorithm: 'HS256',
         expiresIn: JWT_STORAGE_TIME,
       });
       res.send({ token });
