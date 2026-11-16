@@ -117,7 +117,7 @@ async function handle(request, env) {
     try {
       await env.DB.prepare('INSERT INTO users (_id, name, email, password_hash, password_salt) VALUES (?, ?, ?, ?, ?)').bind(id, name, email.toLowerCase(), hash, salt).run();
     } catch (error) {
-      if (/unique|constraint/i.test(error.message)) fail(409, 'Пользователь с таким email уже существует');
+      if (/unique constraint failed:\s*users\.email\b/i.test(error.message)) fail(409, 'Пользователь с таким email уже существует');
       throw error;
     }
     return respond(request, { _id: id, name, email: email.toLowerCase() });
