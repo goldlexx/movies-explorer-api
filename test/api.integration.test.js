@@ -16,6 +16,7 @@ process.env.JWT_SECRET = 'integration-tests-only-secret-value-over-32-chars';
 if (testMongoUri) process.env.DATABASE_URL = testMongoUri;
 const app = require('../app');
 const Movie = require('../models/movie');
+const { handleError } = require('../middlewares/handleError');
 
 const testToken = jwt.sign(
   { _id: new mongoose.Types.ObjectId().toString() },
@@ -74,6 +75,7 @@ test('rejects invalid signup passwords and movie URLs before database access', a
       method: 'POST',
       body: { name: 'Test User', email: 'test@example.test', password: 'short' },
     });
+    const unauthorizedMovies = await sendRequest(port, '/movies');
     const movie = await sendRequest(port, '/movies', {
       method: 'POST',
       token: testToken,
@@ -81,12 +83,33 @@ test('rejects invalid signup passwords and movie URLs before database access', a
     });
 
     assert.equal(signup.status, 400);
+    assert.equal(unauthorizedMovies.status, 401);
     assert.equal(movie.status, 400);
   } finally {
     await new Promise((resolve) => {
       server.close(() => resolve());
     });
   }
+});
+
+test('hides internal error details from API responses', () => {
+  let responseStatus;
+  let responseBody;
+  const response = {
+    status(status) {
+      responseStatus = status;
+      return this;
+    },
+    send(body) {
+      responseBody = body;
+      return this;
+    },
+  };
+
+  handleError(new Error('database connection details'), {}, response, () => {});
+
+  assert.equal(responseStatus, 500);
+  assert.deepEqual(responseBody, { message: 'На сервере произошла ошибка' });
 });
 
 test('Mongoose rejects malformed movie URLs without a database', () => {
