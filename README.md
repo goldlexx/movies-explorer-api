@@ -1,48 +1,44 @@
 # Movies Explorer API
 
-The Express API for [Movies Explorer](https://github.com/goldlexx/movies-explorer-frontend). It manages user accounts, authentication, profile data, and saved movies.
+REST API for the [Movies Explorer frontend](https://github.com/goldlexx/movies-explorer-frontend), deployed on Cloudflare Workers with Cloudflare D1.
 
 ## Features
 
-- Register and sign in with JWT authentication
-- Read and update the authenticated user's profile
-- List, save, and delete the authenticated user's movies
-- Validate request data and URLs
-- Apply rate limiting and centralized request/error logging
+- User registration and sign-in with signed JWTs
+- Password hashing with PBKDF2 and Web Crypto
+- Authenticated profile read/update
+- User-owned saved movie list, create, and delete operations
+- D1 foreign-key ownership and parameterized SQL queries
+- CORS restricted to `https://goldlexx.github.io`
 
-## Stack
+## API
 
-Node.js, Express, MongoDB, Mongoose, JWT, bcryptjs, Celebrate/Joi, Winston, Helmet.
+| Method | Path | Access |
+| --- | --- | --- |
+| `POST` | `/signup` | Public |
+| `POST` | `/signin` | Public |
+| `GET`, `PATCH` | `/users/me` | Bearer token |
+| `GET`, `POST` | `/movies` | Bearer token |
+| `DELETE` | `/movies/:_id` | Bearer token; owner only |
 
-## Run locally
+## Local development
 
-Run MongoDB locally and create `.env` from `.env.example`. Set a random `JWT_SECRET` of at least 32 characters and a local `DATABASE_URL`.
+Install dependencies, create `.dev.vars` with a `JWT_SECRET` of at least 32 characters, then apply the local D1 schema and start Wrangler:
 
-```bash
+```sh
 npm ci
+npm run db:migrate:local
 npm run dev
 ```
 
-Use `npm start` to run the production server and `npm run lint` for ESLint.
+The local D1 database is separate from the deployed database. Never commit `.dev.vars` or production credentials.
 
-## API routes
+## Deployment
 
-- `POST /signup` and `POST /signin`
-- `GET /users/me` and `PATCH /users/me`
-- `GET /movies/`, `POST /movies/`, and `DELETE /movies/:_id`
+The D1 database binding and schema are defined in `wrangler.jsonc` and `migrations/`. Apply the migration to the remote database before deploying. Store `JWT_SECRET` with Wrangler's secret management; it is intentionally absent from source control.
 
-The API requires JWT and MongoDB settings from the environment; no secret fallback is used.
-
-## Integration tests
-
-The API integration suite is in `test/api.integration.test.js`. Set `MONGODB_TEST_URI` to a disposable MongoDB database whose name ends in `_test`, then run:
-
-```bash
-npm test
+```sh
+npm run db:migrate:remote
+npx wrangler secret put JWT_SECRET
+npm run deploy
 ```
-
-The test suite drops the selected database before and after its run. Never point `MONGODB_TEST_URI` at a working or production database. Without this variable, the integration suite is skipped.
-
-## Demo
-
-No live API endpoint is listed because the previous deployment could not be verified.
