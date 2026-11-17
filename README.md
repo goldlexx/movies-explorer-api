@@ -1,44 +1,48 @@
-# Movies Explorer API
+<div align="center">
 
-REST API for the [Movies Explorer frontend](https://github.com/goldlexx/movies-explorer-frontend), deployed on Cloudflare Workers with Cloudflare D1.
+# 🎬 Movies Explorer API
 
-## Features
+REST API для аккаунтов и сохранённых фильмов Movies Explorer на Cloudflare Workers и D1.
 
-- User registration and sign-in with signed JWTs
-- Password hashing with PBKDF2 and Web Crypto
-- Authenticated profile read/update
-- User-owned saved movie list, create, and delete operations
-- D1 foreign-key ownership and parameterized SQL queries
-- CORS restricted to `https://goldlexx.github.io`
+[![Cloudflare Workers](https://img.shields.io/badge/Cloudflare%20Workers-f38020?logo=cloudflare&logoColor=fff)](https://workers.cloudflare.com/) [![D1](https://img.shields.io/badge/D1-SQLite-f38020?logo=cloudflare&logoColor=fff)](https://developers.cloudflare.com/d1/)
+
+</div>
+
+## Возможности
+
+- регистрация и вход с JWT;
+- PBKDF2-хеширование паролей через Web Crypto;
+- чтение и обновление профиля;
+- создание и удаление собственных сохранённых фильмов.
 
 ## API
 
-| Method | Path | Access |
-| --- | --- | --- |
-| `POST` | `/signup` | Public |
-| `POST` | `/signin` | Public |
-| `GET`, `PATCH` | `/users/me` | Bearer token |
-| `GET`, `POST` | `/movies` | Bearer token |
-| `DELETE` | `/movies/:_id` | Bearer token; owner only |
+| Метод | Путь | Доступ |
+|---|---|---|
+| `POST` | `/signup` | публичный |
+| `POST` | `/signin` | публичный |
+| `GET`, `PATCH` | `/users/me` | Bearer JWT |
+| `GET`, `POST` | `/movies` | Bearer JWT |
+| `DELETE` | `/movies/:id` | владелец карточки |
 
-## Local development
+## Рабочий Worker
 
-Install dependencies, create `.dev.vars` with a `JWT_SECRET` of at least 32 characters, then apply the local D1 schema and start Wrangler:
+[movies-explorer-api.rustik-yuldashev.workers.dev](https://movies-explorer-api.rustik-yuldashev.workers.dev)
 
-```sh
+## Установка и запуск
+
+```bash
 npm ci
 npm run db:migrate:local
 npm run dev
 ```
 
-The local D1 database is separate from the deployed database. Never commit `.dev.vars` or production credentials.
+Для локального запуска используйте `.dev.vars`. Production-секреты не хранятся в Git.
 
-## Deployment
+## Технологии
 
-The D1 database binding and schema are defined in `wrangler.jsonc` and `migrations/`. Apply the migration to the remote database before deploying. Store `JWT_SECRET` with Wrangler's secret management; it is intentionally absent from source control.
+Cloudflare Workers, D1, JavaScript, Web Crypto, JWT.
 
-```sh
-npm run db:migrate:remote
-npx wrangler secret put JWT_SECRET
-npm run deploy
-```
+## Лицензия
+
+Лицензия в репозитории не указана.
