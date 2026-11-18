@@ -5,7 +5,7 @@ const jwtLifetime = 7 * 24 * 60 * 60;
 function json(data, status = 200, headers = {}) {
   return new Response(JSON.stringify(data), {
     status,
-    headers: { 'Content-Type': 'application/json; charset=utf-8', ...headers },
+    headers: { 'Cache-Control': 'no-store', 'Content-Type': 'application/json; charset=utf-8', ...headers },
   });
 }
 
@@ -120,15 +120,17 @@ async function handle(request, env) {
       if (/unique constraint failed:\s*users\.email\b/i.test(error.message)) fail(409, 'Пользователь с таким email уже существует');
       throw error;
     }
-    return respond(request, { _id: id, name, email: email.toLowerCase() });
+    const user = { _id: id, name, email: email.toLowerCase() };
+    return respond(request, { ...user, token: await signToken(id, env.JWT_SECRET) });
   }
 
   if (method === 'POST' && path === '/signin') {
     const { email, password } = await readJson(request);
     if (!validateEmail(email) || typeof password !== 'string') fail(400, 'Некорректные данные для входа');
-    const user = await env.DB.prepare('SELECT _id, password_hash, password_salt FROM users WHERE email = ?').bind(email.toLowerCase()).first();
+    const user = await env.DB.prepare('SELECT _id, name, email, password_hash, password_salt FROM users WHERE email = ?').bind(email.toLowerCase()).first();
     if (!user || await passwordHash(password, user.password_salt) !== user.password_hash) fail(401, 'Неправильные почта или пароль');
-    return respond(request, { token: await signToken(user._id, env.JWT_SECRET) });
+    const { _id, name, email: accountEmail } = user;
+    return respond(request, { token: await signToken(_id, env.JWT_SECRET), user: { _id, name, email: accountEmail } });
   }
 
   const payload = await authenticate(request, env);
